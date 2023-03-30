@@ -60,8 +60,7 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     form = PostForm(
-        request.POST or None,
-        files=request.FILES or None
+        request.POST or None
     )
     if not form.is_valid():
         return render(request, 'posts/create_post.html', {'form': form})
@@ -79,7 +78,6 @@ def post_edit(request, post_id):
         return redirect('posts:post_detail', post_id=post_id)
     form = PostForm(
         request.POST or None,
-        files=request.FILES or None,
         instance=post,
     )
     if not form.is_valid():
