@@ -6,5 +6,5 @@ def year(request):
     year = datetime.now()
     print(year)
     return {
-        'year' : datetime.today().year
+        'year': datetime.today().year
     }
