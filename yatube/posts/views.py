@@ -4,55 +4,49 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import PostForm
 from .models import Post, Group, User
+from . import constants
 
-SELECT_LIMIT = 10
+
+def paginator(request, post_list):
+    """Паджинатор."""
+    paginator = Paginator(post_list, constants.POSTS_PER_PAGE)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return page_obj
 
 
 def index(request):
     post_list = Post.objects.all()
-    paginator = Paginator(post_list, SELECT_LIMIT)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
-        'page_obj': page_obj,
+        'page_obj': paginator(request, post_list),
     }
     return render(request, 'posts/index.html', context)
 
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    posts = group.posts.all()
-    paginator = Paginator(posts, SELECT_LIMIT)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    post_list = group.posts.all()
     context = {
         'group': group,
-        'page_obj': page_obj
+        'page_obj': paginator(request, post_list)
     }
     return render(request, 'posts/group_list.html', context)
 
 
 def profile(request, username):
-    # Здесь код запроса к модели и создание словаря контекста
     author = get_object_or_404(User, username=username)
-    posts_author = author.posts.all()
-    paginator = Paginator(posts_author, SELECT_LIMIT)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    post_list = author.posts.all()
     context = {
         'author': author,
-        'page_obj': page_obj
+        'page_obj': paginator(request, post_list)
     }
     return render(request, 'posts/profile.html', context)
 
 
 def post_detail(request, post_id):
-    # Здесь код запроса к модели и создание словаря контекста
     posts = get_object_or_404(Post, pk=post_id)
-    count = Post.objects.filter(author_id=posts.author_id).count()
     context = {
         'post': posts,
-        'post_count': count
     }
     return render(request, 'posts/post_detail.html', context)
 

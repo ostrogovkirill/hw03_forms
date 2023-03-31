@@ -19,6 +19,7 @@
         </li>
       </ul>      
       <p>{{ post.text|linebreaks }}</p>
+      <a href="{% url 'posts:post_detail' post.pk %}">(подробная информация)</a>
     </article>
   {% if not forloop.last %}<hr>{% endif %}
   {% endfor %}
