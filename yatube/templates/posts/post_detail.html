@@ -28,6 +28,7 @@
           <p>
             {{ post.text|linebreaks }}
           </p>
+          <a href="{% url 'posts:post_edit' post.pk %}">редактировать запись</a>
         </article>
       </div> 
 {% endblock %}
